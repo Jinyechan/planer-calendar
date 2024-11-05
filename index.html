@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <title>FullCalendar 애플 캘린더 스타일</title>
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+    <style>
+        /* 캘린더 스타일 커스터마이징 */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f5;
+        }
+
+        #calendar {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+        }
+
+        .fc .fc-toolbar-title {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="calendar"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var calendarEl = document.getElementById('calendar');
+
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth', // 초기 보기 모드 설정 (월간 보기)
+                locale: 'ko', // 한국어 설정
+                headerToolbar: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                },
+                editable: true, // 이벤트 드래그 및 수정 가능 설정
+                selectable: true, // 캘린더 클릭 시 이벤트 추가를 위한 선택 가능 설정
+                selectHelper: true,
+                select: function (info) {
+                    var title = prompt('이벤트 제목을 입력하세요:'); // 이벤트 제목 입력
+                    if (title) {
+                        calendar.addEvent({
+                            title: title,
+                            start: info.startStr,
+                            end: info.endStr,
+                            allDay: info.allDay
+                        });
+                    }
+                    calendar.unselect(); // 선택 해제
+                },
+                eventClick: function (info) {
+                    if (confirm("이벤트를 삭제하시겠습니까?")) {
+                        info.event.remove(); // 이벤트 삭제
+                    }
+                },
+                events: [
+                    {
+                        title: '회의',
+                        start: '2024-11-05T10:00:00',
+                        end: '2024-11-05T12:00:00'
+                    },
+                    {
+                        title: '점심',
+                        start: '2024-11-07T12:00:00'
+                    }
+                ],
+                eventColor: '#1e90ff', // 기본 이벤트 색상 설정
+                eventTextColor: '#ffffff', // 이벤트 텍스트 색상
+                height: 'auto'
+            });
+
+            calendar.render();
+        });
+    </script>
+
+</body>
+
+</html>
