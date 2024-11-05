@@ -1,27 +1,31 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
     <meta charset="UTF-8">
-    <title>FullCalendar 애플 캘린더 스타일</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- 모바일 친화적 뷰포트 설정 -->
+    <title>FullCalendar와 메모 기능</title>
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.snow.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.2/dist/quill.js"></script>
     <style>
-        /* 캘린더 스타일 커스터마이징 */
+        /* 전체 페이지 스타일 */
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
             padding: 0;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            height: 100vh;
             background-color: #f0f0f5;
+            color: #333;
         }
 
+        /* 캘린더 스타일 */
         #calendar {
-            max-width: 900px;
-            margin: 0 auto;
+            max-width: 100%;
+            width: 100%;
+            margin: 20px 0;
             background: #fff;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -29,33 +33,60 @@
         }
 
         .fc .fc-toolbar-title {
-            font-size: 1.5em;
+            font-size: 1.2em;
             font-weight: bold;
+        }
+
+        /* 메모 에디터 스타일 */
+        #editor-container {
+            width: 90%;
+            max-width: 800px;
+            margin: 10px 0;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .ql-toolbar.ql-snow {
+            background-color: #fafafa;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+
+        .ql-container.ql-snow {
+            height: 200px; /* 메모 입력 영역 높이 설정 */
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
         }
     </style>
 </head>
-
 <body>
 
     <div id="calendar"></div>
+
+    <div id="editor-container">
+        <div id="editor" placeholder="여기에 메모를 작성하세요..."></div>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             var calendarEl = document.getElementById('calendar');
 
             var calendar = new FullCalendar.Calendar(calendarEl, {
-                initialView: 'dayGridMonth', // 초기 보기 모드 설정 (월간 보기)
-                locale: 'ko', // 한국어 설정
+                initialView: 'dayGridMonth',
+                locale: 'ko',
                 headerToolbar: {
                     left: 'prev,next today',
                     center: 'title',
                     right: 'dayGridMonth,timeGridWeek,timeGridDay'
                 },
-                editable: true, // 이벤트 드래그 및 수정 가능 설정
-                selectable: true, // 캘린더 클릭 시 이벤트 추가를 위한 선택 가능 설정
+                editable: true,
+                selectable: true,
                 selectHelper: true,
                 select: function (info) {
-                    var title = prompt('이벤트 제목을 입력하세요:'); // 이벤트 제목 입력
+                    var title = prompt('이벤트 제목을 입력하세요:');
                     if (title) {
                         calendar.addEvent({
                             title: title,
@@ -64,33 +95,28 @@
                             allDay: info.allDay
                         });
                     }
-                    calendar.unselect(); // 선택 해제
+                    calendar.unselect();
                 },
                 eventClick: function (info) {
                     if (confirm("이벤트를 삭제하시겠습니까?")) {
-                        info.event.remove(); // 이벤트 삭제
+                        info.event.remove();
                     }
                 },
-                events: [
-                    {
-                        title: '회의',
-                        start: '2024-11-05T10:00:00',
-                        end: '2024-11-05T12:00:00'
-                    },
-                    {
-                        title: '점심',
-                        start: '2024-11-07T12:00:00'
-                    }
-                ],
-                eventColor: '#1e90ff', // 기본 이벤트 색상 설정
-                eventTextColor: '#ffffff', // 이벤트 텍스트 색상
+                events: [],
+                eventColor: '#1e90ff',
+                eventTextColor: '#ffffff',
                 height: 'auto'
             });
 
             calendar.render();
+
+            // Quill 에디터 초기화
+            const quill = new Quill('#editor', {
+                theme: 'snow',
+                placeholder: '여기에 메모를 작성하세요...'
+            });
         });
     </script>
 
 </body>
-
 </html>
